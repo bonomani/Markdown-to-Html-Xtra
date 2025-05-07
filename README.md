@@ -1,7 +1,3 @@
-Here is the English translation of your Markdown description:
-
----
-
 # 📝 Markdown-to-Html-Xtra:
 
 Enhanced Markdown to HTML Converter
