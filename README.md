@@ -13,8 +13,7 @@ A PowerShell script that converts a **Markdown (.md)** file into an enriched, **
   * **Code blocks** with **syntax highlighting (Prism.js)**
   * **Mermaid** diagrams
   * **LaTeX** formulas via **KaTeX**
-  * **Copy buttons** for `<pre>` blocks (one-click copy of code snippets)
-* 💡 Preserves original code blocks for custom processing
+  * **Copy buttons** for code blocks (one-click copy of code snippets)
 * 🎨 Uses a **simple and responsive HTML template** (`simple_standalone_tmpl.html`)
 * 📎 Generates a **lightweight HTML file**, viewable locally without a server
 * 📌 Displays a **download banner** when opened via HTTP (optional)
