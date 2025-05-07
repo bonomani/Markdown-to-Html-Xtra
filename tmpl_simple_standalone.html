@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>{{TITLE}}</title>
+
+  <!-- Style général -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.min.css" />
+
+  <!-- Prism.js (core + thème) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+
+  <!-- Langages supplémentaires -->
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-bash.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-json.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-python.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-javascript.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-markdown.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-yaml.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-powershell.min.js"></script>
+
+  <!-- KaTeX -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+
+  <style>
+    pre {
+      position: relative;
+      background: #f9f9f9;
+      padding: 1em;
+      overflow-x: auto;
+    }
+
+    button.copy-btn {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      font-size: 0.75em;
+      padding: 0.2em 0.6em;
+      border: none;
+      background-color: #ccc;
+      color: #000;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+
+    button.copy-btn:active {
+      background-color: #bbb;
+    }
+
+    .download-btn {
+      margin-left: 1em;
+      padding: 0.4em 1em;
+      font-size: 0.9em;
+      cursor: pointer;
+    }
+
+    #download-banner {
+      display: none;
+      background: #f4f4f4;
+      padding: 1em;
+      border-bottom: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ✅ Bandeau en haut si chargé via HTTP -->
+<div id="download-banner">
+  <strong>📄 Télécharger ce document en version standalone :</strong>
+  <button class="download-btn" onclick="downloadCurrentPage()">Télécharger</button>
+</div>
+
+{{BODY}}
+
+<!-- ✅ Copier les blocs <pre> -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll('pre').forEach(pre => {
+    const btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.setAttribute('aria-label', 'Copier le code');
+    btn.textContent = 'Copier';
+
+    btn.onclick = () => {
+      const codeOnly = [...pre.childNodes]
+        .filter(n => n.nodeName !== 'BUTTON')
+        .map(n => n.innerText || n.textContent)
+        .join('');
+
+      navigator.clipboard.writeText(codeOnly).then(() => {
+        btn.textContent = 'Copié !';
+        setTimeout(() => btn.textContent = 'Copier', 1500);
+      });
+    };
+
+    pre.appendChild(btn);
+  });
+});
+</script>
+
+<!-- ✅ KaTeX (math rendering) -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    renderMathInElement(document.body, {
+      delimiters: [
+        {left: "$$", right: "$$", display: true},
+        {left: "$", right: "$", display: false}
+      ]
+    });
+  });
+</script>
+
+<!-- ✅ Mermaid -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script type="module">
+  mermaid.initialize({ startOnLoad: true });
+</script>
+
+<!-- ✅ Télécharger la page entière -->
+<script>
+function downloadCurrentPage() {
+  const bodyContent = document.body.innerHTML;
+  const headContent = document.head.innerHTML;
+  const html = `
+<!DOCTYPE html>
+<html lang="fr">
+<head>${headContent}</head>
+<body>${bodyContent}</body>
+</html>`;
+
+  const blob = new Blob([html], { type: "text/html" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = document.title.replace(/\s+/g, "_").toLowerCase() + ".html";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+</script>
+
+<!-- ✅ Afficher le bandeau uniquement si ouvert depuis un site -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const banner = document.getElementById("download-banner");
+  if (window.location.protocol.startsWith("http")) {
+    banner.style.display = "block";
+  } else {
+    banner.remove();
+  }
+});
+</script>
+
+</body>
+</html>
