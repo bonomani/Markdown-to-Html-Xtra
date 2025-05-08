@@ -121,6 +121,31 @@ function Convert-MarkdownToHtml {
     return $output
 }
 
+function Fix-KaTeXInlineMathInText {
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$Text
+    )
+
+    # Pattern that matches math span blocks (inline KaTeX)
+    $pattern = '(?s)<span class="math inline">(.*?)</span>'
+
+    $cleaned = [regex]::Replace(
+        $Text,
+        $pattern,
+        {
+            param($match)
+            # Clean the inner math content
+            $inner = $match.Groups[1].Value -replace '\s*\r?\n\s*', ' '
+            return $inner.Trim()  # Return only the raw $...$ math string
+        },
+        'IgnoreCase'
+    )
+
+    return $cleaned
+}
+
+
 # --- Anchor Repair ---
 
 function Clean-Id ($raw) {
@@ -292,10 +317,11 @@ if (-not $OutputFile) {
 $rawMarkdown = Get-Content -Raw -Encoding UTF8 $InputFile
 $preservedMarkdown = Extract-CodeBlocks -markdown $rawMarkdown
 $htmlBody = Convert-MarkdownToHtml -markdown $preservedMarkdown
+$katexFixedhtmlBody = Fix-KaTeXInlineMathInText -Text $htmlBody
 
-$ids     = Extract-Matches $htmlBody '<h[1-6][^>]*?id="([^"]+)"'
-$anchors = Extract-Matches $htmlBody 'href="#([^"]+)"'
-$repairResult = Repair-Anchors -htmlBody $htmlBody -ids $ids -anchors $anchors
+$ids     = Extract-Matches $katexFixedhtmlBody '<h[1-6][^>]*?id="([^"]+)"'
+$anchors = Extract-Matches $katexFixedhtmlBody 'href="#([^"]+)"'
+$repairResult = Repair-Anchors -htmlBody $katexFixedhtmlBody -ids $ids -anchors $anchors
 $cleanHtml = $repairResult.HtmlBody
 
 Write-Report -report $repairResult.Report -cleanHtml $cleanHtml
@@ -303,6 +329,5 @@ $htmlWithBlocks = Inject-CodeBlocks -html $cleanHtml -blocks $script:codeBlocks
 
 $title = [IO.Path]::GetFileNameWithoutExtension($InputFile)
 $htmlFinal = Finalize-Html -templatePath $TemplateFile -bodyHtml $htmlWithBlocks -title $title
-$OutputFile
 Set-Content -Encoding utf8 -NoNewline -Path $OutputFile -Value $htmlFinal
 Write-Host "HTML file generated: $OutputFile"
