@@ -7,7 +7,9 @@ Generate clean, styled HTML documents from `.md` files — complete with KaTeX, 
 
 ## 📚 Table of Contents
 
-* [🌐 View Demo Output](https://bonomani.github.io/Markdown-to-Html-Xtra/readme.html)
+* [🌐 View readme.md rendered with markdown_to_htmlx.ps1](https://bonomani.github.io/Markdown-to-Html-Xtra/readme.html)
+* [🌐 View readme.md rendered by Github Page](https://bonomani.github.io/Markdown-to-Html-Xtra/)
+* [🌐 View readme.md rendered by Github](https://github.com/bonomani/Markdown-to-Html-Xtra/)
 * [✨ Key Features](#-key-features)
 * [🚀 Usage](#-usage)
 * [⚙️ Requirements](#-requirements)
@@ -25,7 +27,6 @@ Generate clean, styled HTML documents from `.md` files — complete with KaTeX, 
 * [🧠 Mermaid Diagram](#-mermaid-diagram)
 * [🖍 Syntax Highlighting](#-syntax-highlighting)
 * [📄 Source: readme.md](#-source-readmemd)
-
 
 ---
 
@@ -61,9 +62,7 @@ Generate clean, styled HTML documents from `.md` files — complete with KaTeX, 
 * PowerShell (Windows, macOS, or Linux)
 * [Pandoc](https://pandoc.org/installing.html) — must be installed and in your system `PATH`
 
-
 ---
-
 
 ## 📄 Markdown
 
@@ -74,8 +73,6 @@ Generate clean, styled HTML documents from `.md` files — complete with KaTeX, 
   - Subitem 2.1  
   - Subitem 2.2  
 
----
-
 ### 🔢 Ordered List
 
 1. First  
@@ -83,22 +80,16 @@ Generate clean, styled HTML documents from `.md` files — complete with KaTeX, 
    1. Substep A  
    2. Substep B  
 
----
-
 ### 🔗 Links and Images
 
 Here is a [link to OpenAI](https://openai.com).  
 
 ![OpenAI Logo](https://openai.com/favicon.ico)
 
----
-
 ### 📝 Blockquote
 
 > “Markdown is easy to read and write.”  
 > — *Some Developer*
-
----
 
 ### ✅ Task List
 
@@ -107,16 +98,12 @@ Here is a [link to OpenAI](https://openai.com).
 - ✅ Use Mermaid  
 - ⬜️ Profit  
 
----
-
 ### 🧪 Table
 
 | Syntax  | Description |
 |---------|-------------|
 | Header  | Title       |
 | Cell    | Text        |
-
----
 
 ### 💬 Inline Code
 
@@ -264,11 +251,12 @@ Generate clean, styled HTML documents from `.md` files — complete with KaTeX, 
 
 ## 📚 Table of Contents
 
-* [🌐 View Demo Output](https://bonomani.github.io/Markdown-to-Html-Xtra/readme.html)
+* [🌐 View readme.md rendered with markdown_to_htmlx.ps1](https://bonomani.github.io/Markdown-to-Html-Xtra/readme.html)
+* [🌐 View readme.md rendered by Github Page](https://bonomani.github.io/Markdown-to-Html-Xtra/)
+* [🌐 View readme.md rendered by Github](https://github.com/bonomani/Markdown-to-Html-Xtra/)
 * [✨ Key Features](#-key-features)
 * [🚀 Usage](#-usage)
 * [⚙️ Requirements](#-requirements)
-
 * [📄 Markdown](#-markdown)
   * [📌 Unordered List](#-unordered-list)
   * [🔢 Ordered List](#-ordered-list)
@@ -277,15 +265,12 @@ Generate clean, styled HTML documents from `.md` files — complete with KaTeX, 
   * [✅ Task List](#-task-list)
   * [🧪 Table](#-table)
   * [💬 Inline Code](#-inline-code)
-
 * [📊 KaTeX](#-katex)
   * [📐 Math](#-katex-math)
   * [🧪 Chemistry](#-katex-chemistry)
-
 * [🧠 Mermaid Diagram](#-mermaid-diagram)
 * [🖍 Syntax Highlighting](#-syntax-highlighting)
 * [📄 Source: readme.md](#-source-readmemd)
-
 
 ---
 
@@ -321,9 +306,7 @@ Generate clean, styled HTML documents from `.md` files — complete with KaTeX, 
 * PowerShell (Windows, macOS, or Linux)
 * [Pandoc](https://pandoc.org/installing.html) — must be installed and in your system `PATH`
 
-
 ---
-
 
 ## 📄 Markdown
 
@@ -334,8 +317,6 @@ Generate clean, styled HTML documents from `.md` files — complete with KaTeX, 
   - Subitem 2.1  
   - Subitem 2.2  
 
----
-
 ### 🔢 Ordered List
 
 1. First  
@@ -343,31 +324,23 @@ Generate clean, styled HTML documents from `.md` files — complete with KaTeX, 
    1. Substep A  
    2. Substep B  
 
----
-
 ### 🔗 Links and Images
 
 Here is a [link to OpenAI](https://openai.com).  
 
 ![OpenAI Logo](https://openai.com/favicon.ico)
 
----
-
 ### 📝 Blockquote
 
 > “Markdown is easy to read and write.”  
 > — *Some Developer*
 
----
-
 ### ✅ Task List
 
 - [x] Understand Markdown  
-- [x] Render KaTeX  
-- [x] Use Mermaid  
-- [ ] Profit  
-
----
+- [ ] Render KaTeX  
+- ✅ Use Mermaid  
+- ⬜️ Profit  
 
 ### 🧪 Table
 
@@ -375,8 +348,6 @@ Here is a [link to OpenAI](https://openai.com).
 |---------|-------------|
 | Header  | Title       |
 | Cell    | Text        |
-
----
 
 ### 💬 Inline Code
 
