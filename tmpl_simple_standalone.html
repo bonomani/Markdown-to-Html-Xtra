@@ -1,17 +1,15 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html>
 <head>
   <meta charset="UTF-8">
   <title>{{TITLE}}</title>
 
-  <!-- Style général -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.min.css" />
+  <!-- Style GitHub Flavored Markdown -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown.min.css" integrity="sha512-bHdFZhZyKzmx1cP6sV5rfhQ2YFJ9KzPqKBBhCuGWN5Shx4ghuQks5zhOaVpMfdhEMzVdINXjEon2mDqZcSHGJw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-  <!-- Prism.js (core + thème) -->
+  <!-- Prism.js (core + theme + languages) -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css" />
   <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
-
-  <!-- Langages supplémentaires -->
   <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-bash.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-json.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-python.min.js"></script>
@@ -26,9 +24,55 @@
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
 
   <style>
+    body {
+      background-color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      padding: 2rem;
+      display: flex;
+      justify-content: center;
+    }
+
+    .markdown-body {
+      max-width: 980px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    /* Headings: mimic GitHub (sizes + underline for h1/h2) */
+    .markdown-body h1 {
+      font-size: 2em;
+      padding-bottom: 0.3em;
+      border-bottom: 1px solid #eaecef;
+      margin: 1em 0 0.5em;
+    }
+
+    .markdown-body h2 {
+      font-size: 1.5em;
+      padding-bottom: 0.3em;
+      border-bottom: 1px solid #eaecef;
+      margin: 1em 0 0.5em;
+    }
+
+    .markdown-body h3 {
+      font-size: 1.25em;
+      margin: 1em 0 0.5em;
+    }
+
+    .markdown-body h4 {
+      font-size: 1.1em;
+      margin: 1em 0 0.5em;
+    }
+
+    .markdown-body h5,
+    .markdown-body h6 {
+      font-size: 1em;
+      margin: 1em 0 0.5em;
+    }
+
+    /* Code blocks with copy button */
     pre {
       position: relative;
-      background: #f9f9f9;
+      background: #f6f8fa;
       padding: 1em;
       overflow-x: auto;
     }
@@ -39,9 +83,8 @@
       right: 6px;
       font-size: 0.75em;
       padding: 0.2em 0.6em;
-      border: none;
       background-color: #ccc;
-      color: #000;
+      border: none;
       border-radius: 3px;
       cursor: pointer;
     }
@@ -50,109 +93,94 @@
       background-color: #bbb;
     }
 
-    .download-btn {
-      margin-left: 1em;
+    #download-button {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
       padding: 0.4em 1em;
       font-size: 0.9em;
       cursor: pointer;
-    }
-
-    #download-banner {
-      display: none;
-      background: #f4f4f4;
-      padding: 1em;
-      border-bottom: 1px solid #ccc;
+      background: #eee;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-family: system-ui, sans-serif;
     }
   </style>
 </head>
 <body>
 
-<!-- ✅ Bandeau en haut si chargé via HTTP -->
-<div id="download-banner">
-  <strong>📄 Télécharger ce document en version standalone :</strong>
-  <button class="download-btn" onclick="downloadCurrentPage()">Télécharger</button>
-</div>
-
+<article class="markdown-body">
+<button id="download-button" class="download-btn" onclick="downloadCurrentPage()">💾 Download</button>
 {{BODY}}
-
-<!-- ✅ Copier les blocs <pre> -->
+</article>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js" type="module"></script>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
+
+  // Copy buttons for <pre>
   document.querySelectorAll('pre').forEach(pre => {
     const btn = document.createElement('button');
     btn.className = 'copy-btn';
-    btn.setAttribute('aria-label', 'Copier le code');
-    btn.textContent = 'Copier';
+    btn.setAttribute('aria-label', 'Copy code');
+    btn.textContent = 'Copy';
 
     btn.onclick = () => {
-      const codeOnly = [...pre.childNodes]
+      const code = [...pre.childNodes]
         .filter(n => n.nodeName !== 'BUTTON')
         .map(n => n.innerText || n.textContent)
         .join('');
-
-      navigator.clipboard.writeText(codeOnly).then(() => {
-        btn.textContent = 'Copié !';
-        setTimeout(() => btn.textContent = 'Copier', 1500);
+      navigator.clipboard.writeText(code).then(() => {
+        btn.textContent = 'Copied!';
+        setTimeout(() => btn.textContent = 'Copy', 1500);
       });
     };
 
     pre.appendChild(btn);
   });
+
+  // Math rendering (KaTeX)
+  if (typeof renderMathInElement === "function") {
+    renderMathInElement(document.body, {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "$", right: "$", display: false }
+      ]
+    });
+  }
+
+  // Mermaid init (if script loaded properly)
+  if (window.mermaid?.initialize) {
+    mermaid.initialize({ startOnLoad: true });
+  }
+
+  // Show download button if served via HTTP
+  const btn = document.getElementById("download-button");
+  if (window.location.protocol.startsWith("http")) {
+    btn.style.display = "inline-block";
+  } else {
+    btn.remove();
+  }
+  
 });
 </script>
 
-<!-- ✅ KaTeX (math rendering) -->
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    renderMathInElement(document.body, {
-      delimiters: [
-        {left: "$$", right: "$$", display: true},
-        {left: "$", right: "$", display: false}
-      ]
-    });
-  });
-</script>
-
-<!-- ✅ Mermaid -->
-<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-<script type="module">
-  mermaid.initialize({ startOnLoad: true });
-</script>
-
-<!-- ✅ Télécharger la page entière -->
 <script>
 function downloadCurrentPage() {
-  const bodyContent = document.body.innerHTML;
-  const headContent = document.head.innerHTML;
-  const html = `
-<!DOCTYPE html>
-<html lang="fr">
-<head>${headContent}</head>
-<body>${bodyContent}</body>
-</html>`;
-
-  const blob = new Blob([html], { type: "text/html" });
+  const html = '<!DOCTYPE html>' + document.documentElement.outerHTML;
+  const blob = new Blob([html], { type: "text/html;charset=utf-8" });
   const url = URL.createObjectURL(blob);
 
   const a = document.createElement("a");
   a.href = url;
-  a.download = document.title.replace(/\s+/g, "_").toLowerCase() + ".html";
+  a.download = (document.title?.trim() || "document") + ".html";
+  document.body.appendChild(a);  // ensure it's in DOM for Firefox
   a.click();
-  URL.revokeObjectURL(url);
+  document.body.removeChild(a);  // cleanup
+
+  setTimeout(() => URL.revokeObjectURL(url), 100);
 }
 </script>
 
-<!-- ✅ Afficher le bandeau uniquement si ouvert depuis un site -->
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const banner = document.getElementById("download-banner");
-  if (window.location.protocol.startsWith("http")) {
-    banner.style.display = "block";
-  } else {
-    banner.remove();
-  }
-});
-</script>
-
 </body>
+
 </html>
