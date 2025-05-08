@@ -7,7 +7,6 @@ Generate clean, styled HTML documents from `.md` files — complete with KaTeX, 
 
 ## 📚 Table of Contents
 
-
 * [🌐 View Demo Output](https://bonomani.github.io/Markdown-to-Html-Xtra/readme.html)
 * [✨ Key Features](#-key-features)
 * [🚀 Usage](#-usage)
@@ -23,7 +22,6 @@ Generate clean, styled HTML documents from `.md` files — complete with KaTeX, 
 * [🖍 Syntax Highlighting](#-syntax-highlighting)
 * [📄 Source: readme.md](#-source-readmemd)
 
-
 ---
 
 ## ✨ Key Features
@@ -34,9 +32,8 @@ Generate clean, styled HTML documents from `.md` files — complete with KaTeX, 
 * 🔁 Handles **nested code fences** and **GitHub Flavored Markdown (GFM)**
 * 📋 Adds **copy-to-clipboard** buttons to code blocks
 * 🖍 Enables **syntax highlighting** via **Prism.js**
-* 🎨 Uses a **lightweight, responsive** GitHub-style template
-* 💾 Generates **standalone HTML** (no server or internet required)
-* 📥 Optional **download banner** when viewed online
+* 💾 Generates a lightweight **standalone HTML** (internet required)
+* 📥 Optional **download button** when viewed online
 
 ---
 
@@ -59,9 +56,7 @@ Generate clean, styled HTML documents from `.md` files — complete with KaTeX, 
 * PowerShell (Windows, macOS, or Linux)
 * [Pandoc](https://pandoc.org/installing.html) — must be installed and in your system `PATH`
 
-
 ---
-
 
 ## 📌 Lists
 
