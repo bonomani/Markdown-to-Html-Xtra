@@ -129,8 +129,6 @@
       border-radius: 4px;
       font-family: system-ui, sans-serif;
     }
-    
-
  
     /* Paragraphes */
     p {
@@ -206,10 +204,8 @@
       height: .25em;
       background-color: #e1e4e8;
       margin: 24px 0;
-      overflow: hidden;
-      
+      overflow: hidden;  
     }
- 
   </style>
 </head>
 <body>
@@ -226,7 +222,11 @@ highlighting, and copyable code blocks.</p>
 <ul>
 <li><a
 href="https://bonomani.github.io/Markdown-to-Html-Xtra/readme.html">🌐
-View Demo Output</a></li>
+View readme.md rendered with markdown_to_htmlx.ps1</a></li>
+<li><a href="https://bonomani.github.io/Markdown-to-Html-Xtra/">🌐 View
+readme.md rendered by Github Page</a></li>
+<li><a href="https://github.com/bonomani/Markdown-to-Html-Xtra/">🌐 View
+readme.md rendered by Github</a></li>
 <li><a href="#sparkles-key-features">✨ Key Features</a></li>
 <li><a href="#rocket-usage">🚀 Usage</a></li>
 <li><a href="#gear-requirements">⚙️ Requirements</a></li>
@@ -298,7 +298,6 @@ installed and in your system <code>PATH</code></li>
 <li>Subitem 2.2</li>
 </ul></li>
 </ul>
-<hr />
 <h3 id="1234-ordered-list">🔢 Ordered List</h3>
 <ol type="1">
 <li>First</li>
@@ -308,17 +307,14 @@ installed and in your system <code>PATH</code></li>
 <li>Substep B</li>
 </ol></li>
 </ol>
-<hr />
 <h3 id="link-links-and-images">🔗 Links and Images</h3>
 <p>Here is a <a href="https://openai.com">link to OpenAI</a>.</p>
 <p><img src="https://openai.com/favicon.ico" alt="OpenAI Logo" /></p>
-<hr />
 <h3 id="pencil-blockquote">📝 Blockquote</h3>
 <blockquote>
 <p>“Markdown is easy to read and write.”<br />
 — <em>Some Developer</em></p>
 </blockquote>
-<hr />
 <h3 id="white_check_mark-task-list">✅ Task List</h3>
 <ul class="task-list">
 <li><label><input type="checkbox" checked="" />Understand
@@ -329,7 +325,6 @@ Markdown</label></li>
 <li>✅ Use Mermaid</li>
 <li>⬜️ Profit</li>
 </ul>
-<hr />
 <h3 id="test_tube-table">🧪 Table</h3>
 <table>
 <thead>
@@ -349,7 +344,6 @@ Markdown</label></li>
 </tr>
 </tbody>
 </table>
-<hr />
 <h3 id="speech_balloon-inline-code">💬 Inline Code</h3>
 <p>Use `print()` in Python to output text:</p>
 <p>Example: <code>print("Hello, world!")</code></p>
@@ -450,7 +444,9 @@ Generate clean, styled HTML documents from `.md` files — complete with KaTeX, 
 
 ## 📚 Table of Contents
 
-* [🌐 View Demo Output](https://bonomani.github.io/Markdown-to-Html-Xtra/readme.html)
+* [🌐 View readme.md rendered with markdown_to_htmlx.ps1](https://bonomani.github.io/Markdown-to-Html-Xtra/readme.html)
+* [🌐 View readme.md rendered by Github Page](https://bonomani.github.io/Markdown-to-Html-Xtra/)
+* [🌐 View readme.md rendered by Github](https://github.com/bonomani/Markdown-to-Html-Xtra/)
 * [✨ Key Features](#-key-features)
 * [🚀 Usage](#-usage)
 * [⚙️ Requirements](#-requirements)
@@ -468,7 +464,6 @@ Generate clean, styled HTML documents from `.md` files — complete with KaTeX, 
 * [🧠 Mermaid Diagram](#-mermaid-diagram)
 * [🖍 Syntax Highlighting](#-syntax-highlighting)
 * [📄 Source: readme.md](#-source-readmemd)
-
 
 ---
 
@@ -504,9 +499,7 @@ Generate clean, styled HTML documents from `.md` files — complete with KaTeX, 
 * PowerShell (Windows, macOS, or Linux)
 * [Pandoc](https://pandoc.org/installing.html) — must be installed and in your system `PATH`
 
-
 ---
-
 
 ## 📄 Markdown
 
@@ -517,8 +510,6 @@ Generate clean, styled HTML documents from `.md` files — complete with KaTeX, 
   - Subitem 2.1  
   - Subitem 2.2  
 
----
-
 ### 🔢 Ordered List
 
 1. First  
@@ -526,22 +517,16 @@ Generate clean, styled HTML documents from `.md` files — complete with KaTeX, 
    1. Substep A  
    2. Substep B  
 
----
-
 ### 🔗 Links and Images
 
 Here is a [link to OpenAI](https://openai.com).  
 
 ![OpenAI Logo](https://openai.com/favicon.ico)
 
----
-
 ### 📝 Blockquote
 
 > “Markdown is easy to read and write.”  
 > — *Some Developer*
-
----
 
 ### ✅ Task List
 
@@ -550,16 +535,12 @@ Here is a [link to OpenAI](https://openai.com).
 - ✅ Use Mermaid  
 - ⬜️ Profit  
 
----
-
 ### 🧪 Table
 
 | Syntax  | Description |
 |---------|-------------|
 | Header  | Title       |
 | Cell    | Text        |
-
----
 
 ### 💬 Inline Code
 
@@ -768,7 +749,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 </script>
-
 <script>
 function downloadCurrentPage() {
   const html = '<!DOCTYPE html>' + document.documentElement.outerHTML;
