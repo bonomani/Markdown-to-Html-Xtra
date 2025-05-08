@@ -11,7 +11,6 @@ Generate clean, styled HTML documents from `.md` files — complete with KaTeX, 
 * [✨ Key Features](#-key-features)
 * [🚀 Usage](#-usage)
 * [⚙️ Requirements](#-requirements)
-
 * [📄 Markdown](#-markdown)
   * [📌 Unordered List](#-unordered-list)
   * [🔢 Ordered List](#-ordered-list)
@@ -20,11 +19,9 @@ Generate clean, styled HTML documents from `.md` files — complete with KaTeX, 
   * [✅ Task List](#-task-list)
   * [🧪 Table](#-table)
   * [💬 Inline Code](#-inline-code)
-
 * [📊 KaTeX](#-katex)
   * [📐 Math](#-katex-math)
   * [🧪 Chemistry](#-katex-chemistry)
-
 * [🧠 Mermaid Diagram](#-mermaid-diagram)
 * [🖍 Syntax Highlighting](#-syntax-highlighting)
 * [📄 Source: readme.md](#-source-readmemd)
@@ -106,9 +103,9 @@ Here is a [link to OpenAI](https://openai.com).
 ### ✅ Task List
 
 - [x] Understand Markdown  
-- [x] Render KaTeX  
-- [x] Use Mermaid  
-- [ ] Profit  
+- [ ] Render KaTeX  
+- ✅ Use Mermaid  
+- ⬜️ Profit  
 
 ---
 
