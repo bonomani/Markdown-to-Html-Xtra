@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>test</title>
+  <title>readme</title>
 
   <!-- Style GitHub Flavored Markdown -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown.min.css" integrity="sha512-bHdFZhZyKzmx1cP6sV5rfhQ2YFJ9KzPqKBBhCuGWN5Shx4ghuQks5zhOaVpMfdhEMzVdINXjEon2mDqZcSHGJw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -92,31 +92,19 @@
     button.copy-btn:active {
       background-color: #bbb;
     }
-#download-banner {
-  display: flex; /* horizontal layout */
-  justify-content: flex-end; /* align button to right */
-  align-items: center;       /* vertical center */
-  padding: 0.5em 1em;
-  background: #f9f9f9;
-  border-bottom: 1px solid #ccc;
-}
-    .download-btn {
-      padding: 0.25em 0.8em;
-      font-size: 0.85em;
+
+    #download-button {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      padding: 0.4em 1em;
+      font-size: 0.9em;
       cursor: pointer;
+      background: #eee;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-family: system-ui, sans-serif;
     }
-#download-button {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  padding: 0.4em 1em;
-  font-size: 0.9em;
-  cursor: pointer;
-  background: #eee;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-family: system-ui, sans-serif;
-}
   </style>
 </head>
 <body>
@@ -337,7 +325,9 @@ Generate clean, styled HTML documents from `.md` files — complete with KaTeX, 
 
 ## 📚 Table of Contents
 
-* [📚 Key Features](#-key-features)
+
+* [🌐 View Demo Output](https://bonomani.github.io/Markdown-to-Html-Xtra/readme.html)
+* [✨ Key Features](#-key-features)
 * [🚀 Usage](#-usage)
 * [⚙️ Requirements](#-requirements)
 * [📌 Lists](#-lists)
@@ -351,9 +341,10 @@ Generate clean, styled HTML documents from `.md` files — complete with KaTeX, 
 * [🖍 Syntax Highlighting](#-syntax-highlighting)
 * [📄 Source: readme.md](#-source-readmemd)
 
+
 ---
 
-## 📚 Key Features
+## ✨ Key Features
 
 * 🗒️ Converts **Markdown** to clean, semantic **HTML5** via **Pandoc**
 * 📐 Renders **KaTeX** math (inline & block)
@@ -550,7 +541,8 @@ param (
 )
 
 Write-Host "Hello, $Name!"
-```</code></pre>
+```
+</code></pre>
 
 </article>
 
@@ -602,10 +594,6 @@ document.addEventListener("DOMContentLoaded", () => {
   } else {
     btn.remove();
   }
-
-
-
-
 
 });
 </script>
