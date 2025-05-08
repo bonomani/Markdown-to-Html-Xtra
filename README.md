@@ -7,7 +7,7 @@ Generate clean, styled HTML documents from `.md` files — complete with KaTeX, 
 
 ## 📚 Table of Contents
 
-* [🌐 View Demo Output](https://bonomani.github.io/Markdown-to-Html-Xtra/readme.html)
+* [🌐 View Ouput Result!](https://bonomani.github.io/Markdown-to-Html-Xtra/readme.html)
 * [✨ Key Features](#-key-features)
 * [🚀 Usage](#-usage)
 * [⚙️ Requirements](#-requirements)
