@@ -92,17 +92,39 @@
     button.copy-btn:active {
       background-color: #bbb;
     }
+#download-banner {
+  display: flex; /* horizontal layout */
+  justify-content: flex-end; /* align button to right */
+  align-items: center;       /* vertical center */
+  padding: 0.5em 1em;
+  background: #f9f9f9;
+  border-bottom: 1px solid #ccc;
+}
+    .download-btn {
+      padding: 0.25em 0.8em;
+      font-size: 0.85em;
+      cursor: pointer;
+    }
+#download-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  padding: 0.4em 1em;
+  font-size: 0.9em;
+  cursor: pointer;
+  background: #eee;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-family: system-ui, sans-serif;
+}
   </style>
 </head>
 <body>
 
-<div id="download-banner">
-  <strong>📄 Download this document as a standalone HTML file:</strong>
-  <button class="download-btn" onclick="downloadCurrentPage()">Download</button>
-</div>
-
 <article class="markdown-body">
-  <h1 id="pencil-markdown-to-html-xtra">📝 Markdown-to-Html-Xtra</h1>
+
+<button id="download-button" class="download-btn" onclick="downloadCurrentPage()">💾 Download</button>
+<h1 id="pencil-markdown-to-html-xtra">📝 Markdown-to-Html-Xtra</h1>
 <p><strong>A PowerShell script to convert Markdown into enriched,
 standalone HTML.</strong> Generate clean, styled HTML documents from
 <code>.md</code> files — complete with KaTeX, Mermaid, syntax
@@ -110,7 +132,10 @@ highlighting, and copyable code blocks.</p>
 <hr />
 <h2 id="books-table-of-contents">📚 Table of Contents</h2>
 <ul>
-<li><a href="#books-key-features">📚 Key Features</a></li>
+<li><a
+href="https://bonomani.github.io/Markdown-to-Html-Xtra/readme.html">🌐
+View Demo Output</a></li>
+<li><a href="#sparkles-key-features">✨ Key Features</a></li>
 <li><a href="#rocket-usage">🚀 Usage</a></li>
 <li><a href="#gear-requirements">⚙️ Requirements</a></li>
 <li><a href="#pushpin-lists">📌 Lists</a></li>
@@ -125,7 +150,7 @@ highlighting, and copyable code blocks.</p>
 <li><a href="#page_facing_up-source-readmemd">📄 Source: readme.md</a></li>
 </ul>
 <hr />
-<h2 id="books-key-features">📚 Key Features</h2>
+<h2 id="sparkles-key-features">✨ Key Features</h2>
 <ul>
 <li>🗒️ Converts <strong>Markdown</strong> to clean, semantic
 <strong>HTML5</strong> via <strong>Pandoc</strong></li>
@@ -570,28 +595,35 @@ document.addEventListener("DOMContentLoaded", () => {
     mermaid.initialize({ startOnLoad: true });
   }
 
-  // Show banner if served via HTTP
-  const banner = document.getElementById("download-banner");
+  // Show download button if served via HTTP
+  const btn = document.getElementById("download-button");
   if (window.location.protocol.startsWith("http")) {
-    banner.style.display = "block";
+    btn.style.display = "inline-block";
   } else {
-    banner.remove();
+    btn.remove();
   }
+
+
+
+
 
 });
 </script>
 
 <script>
 function downloadCurrentPage() {
-  const html = `<!DOCTYPE html><html lang="fr"><head>${document.head.innerHTML}</head><body>${document.body.innerHTML}</body></html>`;
-  const blob = new Blob([html], { type: "text/html" });
+  const html = '<!DOCTYPE html>' + document.documentElement.outerHTML;
+  const blob = new Blob([html], { type: "text/html;charset=utf-8" });
   const url = URL.createObjectURL(blob);
 
   const a = document.createElement("a");
   a.href = url;
-  a.download = document.title.replace(/\s+/g, "_").toLowerCase() + ".html";
+  a.download = (document.title?.trim() || "document") + ".html";
+  document.body.appendChild(a);  // ensure it's in DOM for Firefox
   a.click();
-  URL.revokeObjectURL(url);
+  document.body.removeChild(a);  // cleanup
+
+  setTimeout(() => URL.revokeObjectURL(url), 100);
 }
 </script>
 
