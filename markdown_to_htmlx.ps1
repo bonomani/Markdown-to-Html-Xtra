@@ -1,160 +1,308 @@
 <#
 .SYNOPSIS
-  Converts a Markdown (.md) file to HTML using a simple standalone template with support for:
-  - Mermaid diagrams
-  - KaTeX math formulas ($$...$$)
-  - Syntax-highlighted code blocks
-  Requires Pandoc and a template file (default: simple_standalone_tmpl.html).
-
-.DESCRIPTION
-  This script (markdown_to_htmlx.ps1):
-    - Extracts fenced code blocks (```lang) and replaces them with placeholders
-    - Converts Markdown to HTML via Pandoc
-    - Reinserts preserved code and diagram blocks (e.g., Mermaid, Bash)
-    - Injects the result into a minimal HTML template
-    - Outputs a clean, standalone HTML file
+  Converts Markdown (.md) files to standalone HTML supporting:
+    - Mermaid diagrams
+    - KaTeX math formulas ($$...$$)
+    - Syntax-highlighted code blocks
+  Requires Pandoc and an HTML template.
 
 .PARAMETER InputFile
-  Path to the source Markdown (.md) file
+  Path to the Markdown input file.
 
 .PARAMETER OutputFile
-  (Optional) Path to the output HTML file. Defaults to same name as input with `.html` extension
+  (Optional) HTML output file. Defaults to the input filename with `.html`.
 
 .PARAMETER TemplateFile
-  (Optional) Path to the HTML template. Defaults to `C:\po\simple_standalone_tmpl.html`
+  (Optional) HTML template path. Default: `.\tmpl_simple_standalone.html`.
 
 .NOTES
-  - Mermaid blocks are rendered via <div class="mermaid">
-  - KaTeX math is expected to be rendered client-side (e.g., via MathJax)
-  - Requires Pandoc to be installed and available in the system PATH
+  - Mermaid diagrams rendered via <div class="mermaid">
+  - KaTeX formulas rendered client-side (e.g., MathJax)
+  - Pandoc must be installed and available in PATH.
 #>
 
-# Define script parameters
 param (
-    [Parameter(Mandatory = $true)]
-    [string]$InputFile,  # Path to the Markdown input file
+    [Parameter(Mandatory)]
+    [string]$InputFile,
 
-    [Parameter(Mandatory = $false)]
-    [string]$OutputFile, # Optional path to the output HTML file
+    [string]$OutputFile,
 
-    [string]$TemplateFile = ".\tmpl_simple_standalone.html" # Default HTML template
+    [string]$TemplateFile = ".\tmpl_simple_standalone.html"
 )
 
-# Ensure console output uses UTF-8 encoding
+Set-StrictMode -Version Latest
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 
-# If no output file is provided, default to input filename with .html extension
+# --- Initialization & Validation ---
+
+function Validate-Inputs {
+
+    $OutputFile
+    $checks = @(
+        @{ Condition = ($OutputFile -eq $TemplateFile); Message = "The output file [$OutputFile] is the same as the template file. Aborting." },
+        @{ Condition = ($InputFile -eq $TemplateFile); Message = "The input file is the template file. Operation would overwrite it. Aborting." },
+        @{ Condition = ($InputFile -eq $OutputFile); Message = "The input and output files are identical. Aborting." },
+        @{ Condition = (-not (Test-Path $InputFile)); Message = "Input file not found: $InputFile" },
+        @{ Condition = (-not (Test-Path $TemplateFile)); Message = "HTML template not found: $TemplateFile" },
+        @{ Condition = (-not (Get-Command pandoc -ErrorAction SilentlyContinue)); Message = "Pandoc is not installed. https://pandoc.org/installing.html" }
+    )
+
+    foreach ($check in $checks) {
+        if ($check.Condition) {
+            Write-Error $check.Message
+            exit 1
+        }
+    }
+}
+
+# --- Markdown Processing ---
+
+function Extract-CodeBlocks {
+    param (
+        [Parameter(Mandatory)]
+        [string]$markdown
+    )
+
+    $script:codeBlocks = @()
+    $lines = $markdown -split "`n"
+    $insideBlock = $false
+    $blockFence = ""
+    $buffer = @()
+    $resultLines = @()
+
+    foreach ($line in $lines) {
+        if (-not $insideBlock) {
+            if ($line -match '^([`~]{3,})(.*)$') {
+                $blockFence = $matches[1]
+                $insideBlock = $true
+                $buffer = @($line)
+            } else {
+                $resultLines += $line
+            }
+        } else {
+            $buffer += $line
+            $fencePattern = '^' + [regex]::Escape($blockFence) + '\s*$'
+            if ($line -match $fencePattern) {
+                $script:codeBlocks += ($buffer -join "`n")
+                $index = $script:codeBlocks.Count - 1
+                $resultLines += "<!-- BLOCK_$index -->"
+                $insideBlock = $false
+                $buffer = @()
+            }
+        }
+    }
+
+    Write-Host "Markdown code blocks extracted: $($script:codeBlocks.Count)"
+    return $resultLines -join "`n"
+}
+
+function Convert-MarkdownToHtml {
+    param ([string]$markdown)
+
+    $psi = New-Object System.Diagnostics.ProcessStartInfo
+    $psi.FileName = "pandoc"
+    $psi.Arguments = "-f gfm -t html5"
+    $psi.RedirectStandardInput = $true
+    $psi.RedirectStandardOutput = $true
+    $psi.UseShellExecute = $false
+    $psi.StandardOutputEncoding = [System.Text.Encoding]::UTF8
+
+    $process = New-Object System.Diagnostics.Process
+    $process.StartInfo = $psi
+    $process.Start() | Out-Null
+
+    $utf8Bytes = [System.Text.Encoding]::UTF8.GetBytes($markdown)
+    $process.StandardInput.BaseStream.Write($utf8Bytes, 0, $utf8Bytes.Length)
+    $process.StandardInput.Close()
+
+    $output = $process.StandardOutput.ReadToEnd()
+    $process.WaitForExit()
+    Write-Host "Markdown to HTML conversion completed"
+    return $output
+}
+
+# --- Anchor Repair ---
+
+function Clean-Id ($raw) {
+    return ($raw -replace '[^a-zA-Z0-9]+', '-').Trim('-')
+}
+
+function Extract-Matches ($html, $pattern) {
+    $list = New-Object 'System.Collections.Generic.List[string]'
+    $rx = [regex]::new($pattern)
+    foreach ($m in $rx.Matches($html)) {
+        $list.Add($m.Groups[1].Value)
+    }
+    return $list.ToArray()
+}
+
+function Get-LevenshteinDistance ($s, $t) {
+    $n = $s.Length
+    $m = $t.Length
+    $d = New-Object 'int[,]' ($n + 1), ($m + 1)
+
+    for ($i = 0; $i -le $n; $i++) { $d.SetValue($i, $i, 0) }
+    for ($j = 0; $j -le $m; $j++) { $d.SetValue($j, 0, $j) }
+
+    for ($i = 1; $i -le $n; $i++) {
+        for ($j = 1; $j -le $m; $j++) {
+            $cost = if ($s[$i - 1] -eq $t[$j - 1]) { 0 } else { 1 }
+            $del = $d.GetValue($i - 1, $j) + 1
+            $ins = $d.GetValue($i, $j - 1) + 1
+            $sub = $d.GetValue($i - 1, $j - 1) + $cost
+            $d.SetValue([Math]::Min([Math]::Min($del, $ins), $sub), $i, $j)
+        }
+    }
+
+    return $d.GetValue($n, $m)
+}
+
+function Find-BestMatch ($anchor, $ids) {
+    $cleanAnchor = Clean-Id $anchor
+    $candidates = $ids | Where-Object { $_ -like "*$cleanAnchor*" }
+    if (-not $candidates) { $candidates = $ids }
+
+    $best = $null
+    $score = [int]::MaxValue
+    foreach ($id in $candidates) {
+        $dist = Get-LevenshteinDistance $cleanAnchor $id
+        if ($dist -lt $score) {
+            $score = $dist
+            $best = $id
+        }
+    }
+    return $best
+}
+
+function Repair-Anchors ($htmlBody, $ids, $anchors) {
+    $report = [PSCustomObject]@{
+        Fixed   = @()
+        Missing = @()
+        Unused  = @()
+    }
+
+    $body = $htmlBody
+    foreach ($anchor in $anchors) {
+        if ($ids -notcontains $anchor) {
+            $best = Find-BestMatch $anchor $ids
+            if ($best) {
+                $body = $body.Replace("href=`"#$anchor`"", "href=`"#$best`"")
+                $report.Fixed += [PSCustomObject]@{ Original = $anchor; Replacement = $best }
+            } else {
+                $report.Missing += $anchor
+            }
+        }
+    }
+
+    $newIds     = Extract-Matches $body '<h[1-6][^>]*?id="([^"]+)"'
+    $newAnchors = Extract-Matches $body 'href="#([^"]+)"'
+    $report.Unused = $newIds | Where-Object { $newAnchors -notcontains $_ }
+
+    return @{ HtmlBody = $body; Report = $report }
+}
+
+# --- Reinjection of Code Blocks ---
+
+function Inject-CodeBlocks ($html, $blocks) {
+    for ($i = 0; $i -lt $blocks.Count; $i++) {
+        $placeholder = "<!-- BLOCK_$i -->"
+        $block = $blocks[$i]
+
+        # Match first line to get the actual fence and language (e.g., ````python)
+        if ($block -match '^(?<fence>`{3,}|~{3,})(?<lang>\w*)\r?\n') {
+            $fence = $matches['fence']
+            $lang = $matches['lang'].ToLower()
+        } else {
+            $fence = '```'
+            $lang = 'bash'
+        }
+
+        # Split into lines for precise control
+        $lines = $block -split "`r?`n"
+
+        # Remove the opening fence (first line)
+        if ($lines[0] -match "^$fence(\w*)?$") {
+            $lines = $lines[1..($lines.Count - 1)]
+        }
+
+        # Remove the closing fence (last line) only if it exactly matches
+        if ($lines.Count -gt 0 -and $lines[-1] -match "^$fence\s*$") {
+            $lines = $lines[0..($lines.Count - 2)]
+        }
+
+        $code = [string]::Join("`n", $lines)
+
+        # Wrap appropriately
+        if ($lang -eq 'mermaid') {
+            $htmlBlock = "<div class='mermaid'>$code</div>"
+        } else {
+            $class = if ($lang) { "language-$lang" } else { "" }
+            $htmlBlock = "<pre><code class='$class'>$code</code></pre>"
+        }
+
+        # Replace placeholder
+        $html = $html.Replace($placeholder, $htmlBlock)
+    }
+
+    Write-Host "Code blocks reinjected into HTML"
+    return $html
+}
+
+
+
+# --- Final Assembly ---
+
+function Finalize-Html ($templatePath, $bodyHtml, $title) {
+    [string]$template = Get-Content -Path "$templatePath" -Raw -Encoding UTF8
+    $html = $template.Replace('{{BODY}}', $bodyHtml).Replace('{{TITLE}}', $title)
+    return $html -replace '<span class="math display">\$(.*?)\$</span>', '<span class="math display">$$$$$1$$$$</span>'
+}
+
+function Write-Report ($report, $cleanHtml) {
+    Write-Host "`n=== Anchor Correction Report ===" -ForegroundColor Cyan
+
+    if ($report.Fixed.Count -gt 0) {
+        Write-Host "Anchors fixed:" -ForegroundColor Green
+        $report.Fixed | Format-Table Original, Replacement -AutoSize
+    } else {
+        Write-Host "No anchors were fixed." -ForegroundColor Yellow
+    }
+
+    if ($report.Missing.Count -gt 0) {
+        Write-Host "Missing anchors:" -ForegroundColor Red
+        $report.Missing | ForEach-Object { Write-Host "  #$_" }
+    } else {
+        Write-Host "No missing anchors." -ForegroundColor Green
+    }
+
+    if ($report.Unused.Count -gt 0) {
+        Write-Host "Unused IDs:" -ForegroundColor Magenta
+        $report.Unused | ForEach-Object { Write-Host "  id=`"$_`"" }
+    } else {
+        Write-Host "No unused IDs." -ForegroundColor Green
+    }
+}
+
+# --- Main Execution ---
+
+Validate-Inputs
 if (-not $OutputFile) {
-    $OutputFile = [System.IO.Path]::ChangeExtension($InputFile, ".html")
+    $OutputFile = [IO.Path]::ChangeExtension($InputFile, ".html")
 }
+$rawMarkdown = Get-Content -Raw -Encoding UTF8 $InputFile
+$preservedMarkdown = Extract-CodeBlocks -markdown $rawMarkdown
+$htmlBody = Convert-MarkdownToHtml -markdown $preservedMarkdown
 
-# Prevent accidental overwrite of the template file
-if ($OutputFile -eq $TemplateFile) {
-    Write-Error "Le fichier de sortie [$OutputFile] est identique au template. Abandon."
-    exit 1
-}
+$ids     = Extract-Matches $htmlBody '<h[1-6][^>]*?id="([^"]+)"'
+$anchors = Extract-Matches $htmlBody 'href="#([^"]+)"'
+$repairResult = Repair-Anchors -htmlBody $htmlBody -ids $ids -anchors $anchors
+$cleanHtml = $repairResult.HtmlBody
 
-# Prevent using the template file as input
-if ($InputFile -eq $TemplateFile) {
-    Write-Error "Le fichier d'entrée est le template. Tu vas le détruire. Abandon."
-    exit 1
-}
+Write-Report -report $repairResult.Report -cleanHtml $cleanHtml
+$htmlWithBlocks = Inject-CodeBlocks -html $cleanHtml -blocks $script:codeBlocks
 
-# Prevent input and output file from being the same
-if ($InputFile -eq $OutputFile) {
-    Write-Error "Le fichier d'entrée et de sortie sont identiques. Abandon."
-    exit 1
-}
-
-# Check that the input Markdown file exists
-if (-not (Test-Path $InputFile)) {
-    Write-Error "Fichier d'entrée introuvable : $InputFile"
-    exit 1
-}
-
-# Check that the HTML template file exists
-if (-not (Test-Path $TemplateFile)) {
-    Write-Error "Template HTML introuvable : $TemplateFile"
-    exit 1
-}
-
-# Check that Pandoc is installed and accessible
-if (-not (Get-Command pandoc -ErrorAction SilentlyContinue)) {
-    Write-Error "Pandoc n'est pas installé. https://pandoc.org/installing.html"
-    exit 1
-}
-
-# Step 1: Read the raw content of the Markdown file
-$md = Get-Content -Raw -Encoding UTF8 $InputFile
-Write-Host "Fichier Markdown chargé"
-
-# Step 2: Define a regex pattern to extract code blocks (```...```)
-$pattern = '```([\s\S]*?)```'
-$regex = [regex]::new($pattern, [System.Text.RegularExpressions.RegexOptions]::Singleline)
-$script:codeBlocks = @()  # Store code blocks globally for reinjection
-
-# Step 3: Replace code blocks with unique HTML comments <!-- BLOCK_n -->
-$mdPreserved = $regex.Replace($md, {
-    param($match)
-    $block = $match.Value
-    $script:codeBlocks += $block
-    $index = $script:codeBlocks.Count - 1
-    return "<!-- BLOCK_${index} -->"
-})
-
-Write-Host "Blocs Markdown extraits : $($script:codeBlocks.Count)"
-
-# Step 4: Convert Markdown (with placeholders) to HTML using Pandoc via a temp file
-$tempFile = [System.IO.Path]::GetTempFileName()
-Set-Content -Path $tempFile -Encoding UTF8 -Value $mdPreserved
-
-$htmlBody = pandoc $tempFile -f markdown+emoji -t html5
-
-Remove-Item $tempFile
-Write-Host "Conversion Markdown -> HTML terminée"
-
-# Step 5: Reinject the extracted code blocks back into the generated HTML
-for ($i = 0; $i -lt $script:codeBlocks.Count; $i++) {
-    $placeholder = "<!-- BLOCK_${i} -->"
-    
-    $block = $script:codeBlocks[$i]  # Retrieve original block
-
-    # Try to detect the language from the opening backticks
-    if ($block -match '^```(\w+)\r?\n') {
-        $lang = $matches[1].ToLower()
-    } else {
-        $lang = 'bash'  # Default fallback
-    }
-
-    # Strip triple backticks from beginning and end
-    $code = $block -replace '^```[^\r\n]*\r?\n?', '' -replace '\r?\n?```$', ''
-
-    # Inject as mermaid div or regular <pre><code> block
-    if ($lang -eq 'mermaid') {
-        $htmlBlock = "<div class=`"mermaid`">$code</div>"
-    } else {
-        $class = if ($lang) { "language-$lang" } else { "" }
-        $htmlBlock = "<pre><code class=`"$class`">$code</code></pre>"
-    }
-
-    # Replace the placeholder with the actual HTML block
-    $htmlBody = $htmlBody -replace [regex]::Escape($placeholder), $htmlBlock
-}
-
-Write-Host "Blocs Mermaid réinjectés dans le HTML"
-
-# Step 6: Integrate the generated HTML body into the template
-$template = Get-Content -Raw -Encoding UTF8 $TemplateFile
-$title = [System.IO.Path]::GetFileNameWithoutExtension($InputFile)
-
-# Replace placeholders in the template
-$htmlFinal = $template -replace '{{TITLE}}', [Regex]::Escape($title) -replace '{{BODY}}', $htmlBody
-
-# Restore display math delimiters ($$...$$) removed during the -replace '{{BODY}}', $htmlBody operation
-# PowerShell interprets $... as variables in replacement strings, causing $$ math to be stripped
-$htmlFinal = $htmlFinal -replace '<span class="math display">\$(.*?)\$</span>', '<span class="math display">$$$$$1$$$$</span>'
-
-# Step 7: Write the final HTML content to the output file (UTF-8, no newline at end)
-Set-Content -Encoding utf8 -NoNewline -LiteralPath $OutputFile -Value $htmlFinal
-
-Write-Host "Fichier HTML généré : $OutputFile"
+$title = [IO.Path]::GetFileNameWithoutExtension($InputFile)
+$htmlFinal = Finalize-Html -templatePath $TemplateFile -bodyHtml $htmlWithBlocks -title $title
+$OutputFile
+Set-Content -Encoding utf8 -NoNewline -Path $OutputFile -Value $htmlFinal
+Write-Host "HTML file generated: $OutputFile"
