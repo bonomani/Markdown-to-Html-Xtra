@@ -7,8 +7,9 @@ Generate clean, styled HTML documents from `.md` files — complete with KaTeX, 
 
 ## 📚 Table of Contents
 
+
 * [🌐 View Demo Output](https://bonomani.github.io/Markdown-to-Html-Xtra/readme.html)
-* [📚 Key Features](#-key-features)
+* [✨ Key Features](#-key-features)
 * [🚀 Usage](#-usage)
 * [⚙️ Requirements](#-requirements)
 * [📌 Lists](#-lists)
@@ -22,9 +23,10 @@ Generate clean, styled HTML documents from `.md` files — complete with KaTeX, 
 * [🖍 Syntax Highlighting](#-syntax-highlighting)
 * [📄 Source: readme.md](#-source-readmemd)
 
+
 ---
 
-## 📚 Key Features
+## ✨ Key Features
 
 * 🗒️ Converts **Markdown** to clean, semantic **HTML5** via **Pandoc**
 * 📐 Renders **KaTeX** math (inline & block)
@@ -237,7 +239,9 @@ Generate clean, styled HTML documents from `.md` files — complete with KaTeX, 
 
 ## 📚 Table of Contents
 
-* [📚 Key Features](#-key-features)
+
+* [🌐 View Demo Output](https://bonomani.github.io/Markdown-to-Html-Xtra/readme.html)
+* [✨ Key Features](#-key-features)
 * [🚀 Usage](#-usage)
 * [⚙️ Requirements](#-requirements)
 * [📌 Lists](#-lists)
@@ -251,9 +255,10 @@ Generate clean, styled HTML documents from `.md` files — complete with KaTeX, 
 * [🖍 Syntax Highlighting](#-syntax-highlighting)
 * [📄 Source: readme.md](#-source-readmemd)
 
+
 ---
 
-## 📚 Key Features
+## ✨ Key Features
 
 * 🗒️ Converts **Markdown** to clean, semantic **HTML5** via **Pandoc**
 * 📐 Renders **KaTeX** math (inline & block)
@@ -451,5 +456,6 @@ param (
 
 Write-Host "Hello, $Name!"
 ```
+
 `````
 
