@@ -94,9 +94,7 @@ Here is a [link to OpenAI](https://openai.com).
 ### ✅ Task List
 
 - [x] Understand Markdown  
-- [ ] Render KaTeX  
-- ✅ Use Mermaid  
-- ☐ Profit  
+- [ ] Render KaTeX
 
 ### 🧪 Table
 
