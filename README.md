@@ -1,6 +1,7 @@
 # 📝 Markdown-to-Html-Xtra
 
-**A PowerShell script to convert Markdown into enriched, standalone HTML.**
+**A PowerShell script to convert Markdown into standalone, enriched, and lightweight HTML.**
+
 Generate clean, styled HTML documents from `.md` files — complete with KaTeX, Mermaid, syntax highlighting, and copyable code blocks.
 
 ---
@@ -32,14 +33,16 @@ Generate clean, styled HTML documents from `.md` files — complete with KaTeX, 
 
 ## ✨ Key Features
 
-* 🗒️ Converts **Markdown** to clean, semantic **HTML5** via **Pandoc**
-* 📐 Renders **KaTeX** math (inline & block)
-* 🧠 Supports **Mermaid** diagrams (flowcharts, Gantt, etc.)
-* 🔁 Handles **nested code fences** and **GitHub Flavored Markdown (GFM)**
-* 📋 Adds **copy-to-clipboard** buttons to code blocks
+* 💾 Generates a lightweight standalone HTML
+* 🔗 Automatically corrects and rewrites internal Markdown links for seamless navigation in the HTML page
+* 📐 Renders **KaTeX** math (inline & block) \*
+* 🧠 Supports **Mermaid** diagrams (flowcharts, Gantt, etc.) \*
 * 🖍 Enables **syntax highlighting** via **Prism.js**
-* 💾 Generates a lightweight **standalone HTML** (internet required)
-* 📥 Optional **download button** when viewed online
+* 📋 Adds **copy-to-clipboard** buttons to code blocks
+* 🔁 Converts **Markdown** with high fidelity, closely matching how it renders on **GitHub**
+* 📥 Adds a **download button** when viewed online
+
+\* *Internet required on first use — typically cached afterward.*
 
 ---
 
