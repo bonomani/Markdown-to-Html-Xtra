@@ -96,7 +96,7 @@ Here is a [link to OpenAI](https://openai.com).
 - [x] Understand Markdown  
 - [ ] Render KaTeX  
 - ✅ Use Mermaid  
-- ⬜️ Profit  
+- ☐ Profit  
 
 ### 🧪 Table
 
@@ -340,7 +340,7 @@ Here is a [link to OpenAI](https://openai.com).
 - [x] Understand Markdown  
 - [ ] Render KaTeX  
 - ✅ Use Mermaid  
-- ⬜️ Profit  
+- ☐ Profit  
 
 ### 🧪 Table
 
